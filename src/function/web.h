@@ -115,10 +115,7 @@ void call_pages() {
             sysvar.puissance_dispo = 0;         // En W
             sysvar.change = 0; // par sécurité, au cas ou le main n'aurait pas fini
           }
-                  
-        // Modif RV - correction bug si dimmer configuré mais pas allumé ou planté
-          else if (sysvar.change == 1){}
-                      
+                     
 /// si remontée de puissance dispo alors prioritaire
           else if (request->hasParam("puissance")) {
 /// on recupère la puissance disponible  
@@ -442,7 +439,7 @@ void call_pages() {
 /////////////////////////
 
 server.on("/get", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-      ///   /get?paramettre=xxxx
+      ///  fonction  /get?paramettre=xxxx
     if (request->hasParam("save")) { Serial.println(F("Saving configuration..."));
                           saveConfiguration(filename_conf, config);   
                             }
@@ -458,20 +455,14 @@ server.on("/get", HTTP_ANY, [] (AsyncWebServerRequest *request) {
 if (request->hasParam("charge1")) { 
     config.charge1 = request->getParam("charge1")->value().toInt(); 
     config.charge = config.charge1 + config.charge2 + config.charge3;
-    if (!AP && mqtt_config.mqtt) { //device_dimmer_charge.send(String(config.charge));
-      }
     }
    if (request->hasParam("charge2")) { 
     config.charge2 = request->getParam("charge2")->value().toInt(); 
     config.charge = config.charge1 + config.charge2 + config.charge3;
-    if (!AP && mqtt_config.mqtt) {  //device_dimmer_charge.send(String(config.charge));
-      }
     }
    if (request->hasParam("charge3")) { 
     config.charge3 = request->getParam("charge3")->value().toInt(); 
     config.charge = config.charge1 + config.charge2 + config.charge3;
-    if (!AP && mqtt_config.mqtt) { //device_dimmer_charge.send(String(config.charge));
-      }
     }
    if (request->hasParam("IDXAlarme")) { config.IDXAlarme = request->getParam("IDXAlarme")->value().toInt();}
    if (request->hasParam("IDX")) { config.IDX = request->getParam("IDX")->value().toInt();}
@@ -531,7 +522,7 @@ if (request->hasParam("charge1")) {
         else if (relay == 1) { digitalWrite(RELAY1 , HIGH); } 
         else if (relay == 2) { digitalWrite(RELAY1, !digitalRead(RELAY1)); }
         int relaystate = digitalRead(RELAY1); 
-        char str[8];
+        char str[8];// NOSONAR
         itoa( relaystate, str, 10 );
         request->send(200, "text/html", str );
         if (!AP && mqtt_config.mqtt) { device_relay1.send(String(relaystate));}
@@ -544,7 +535,7 @@ if (request->hasParam("charge1")) {
         else if (relay == 1) { digitalWrite(RELAY2 , HIGH); } 
         else if (relay == 2) { digitalWrite(RELAY2, !digitalRead(RELAY2)); }
         int relaystate = digitalRead(RELAY2); 
-        char str[8];
+        char str[8];// NOSONAR
         itoa( relaystate, str, 10 );
         request->send(200, "text/html", str );
         if (!AP && mqtt_config.mqtt) { device_relay2.send(String(relaystate));}
@@ -572,7 +563,7 @@ if (request->hasParam("charge1")) {
 
 String getState_dallas() {
   String state; 
-  char buffer[5];
+  char buffer[5];// NOSONAR
    
   dtostrf(sysvar.celsius[sysvar.dallas_maitre],2, 1, buffer); // conversion en n.1f 
   
@@ -581,7 +572,7 @@ String getState_dallas() {
     
     //affichage des température et adresse des sondes dallas 
     for (int i = 0; i < MAX_DALLAS; i++) {
-      char buffer[5];
+      char buffer[5];// NOSONAR
       // affichage que si != 0 
       if (sysvar.celsius[i] != 0) {
         dtostrf(sysvar.celsius[i],2, 1, buffer); // conversion en n.1f 
@@ -596,7 +587,7 @@ String getState_dallas() {
 
 String getState() {
   String state; 
-  char buffer[5];
+  char buffer[5];// NOSONAR
   #ifdef  SSR
     #ifdef SSR_ZC
       int instant_power= unified_dimmer.get_power(); 

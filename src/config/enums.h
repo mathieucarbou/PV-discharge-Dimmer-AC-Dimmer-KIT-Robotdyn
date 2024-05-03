@@ -16,7 +16,7 @@ constexpr const int MAX_DALLAS=8; // nombre de sonde Dallas
 struct Logs {
 private:
      
-      char log_init[LOG_MAX_STRING_LENGTH];
+      char log_init[LOG_MAX_STRING_LENGTH]; // NOSONAR
       int MaxString = LOG_MAX_STRING_LENGTH * .9 ;
 
 public:
@@ -82,7 +82,7 @@ struct Config {
     int minpow;
     int startingpow;
     char SubscribePV[100];
-    char SubscribeTEMP[100];
+    char SubscribeTEMP[100]; // NOSONAR
     bool restart;
     bool dimmer_on_off;
   /// @brief  // Somme des 3 charges déclarées dans la page web
@@ -99,7 +99,7 @@ struct Config {
     bool DOMOTICZ;
     char PVROUTER[5];
     char DALLAS[17];
-    char say_my_name[32];
+    char say_my_name[32]; // NOSONAR
 };
 
 struct Mqtt {

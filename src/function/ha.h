@@ -4,8 +4,8 @@
 #include <AsyncMqttClient.h>
 
 extern AsyncMqttClient  client;
-extern Config config;
-extern Mqtt mqtt_config;
+extern Config config; // NOSONAR
+extern Mqtt mqtt_config; // NOSONAR
 extern System sysvar;
 extern DeviceAddress addr[MAX_DALLAS];  // array of (up to) 15 temperature sensors
 extern String devAddrNames[MAX_DALLAS];  // array of (up to) 15 temperature sensors
@@ -68,7 +68,7 @@ struct HA
 
     private:String expire_after; 
     public:void Set_expire_after(bool setter) {
-      if (setter) {expire_after="\"exp_aft\": \""+ String(MQTT_INTERVAL) +"\", "; }
+      if (setter) {expire_after=R"("exp_aft": ")" + String(MQTT_INTERVAL) + R"(", )"; }
     }
 
   private:String HA_sensor_type() {
@@ -76,47 +76,49 @@ struct HA
       String topic_Xlyric = "Xlyric/"+ node_id +"/";
       String info;
       if (entity_type == "sensor") {
-              info =         "\"dev_cla\": \""+dev_cla+"\","
-            "\"unit_of_meas\": \""+unit_of_meas+"\","
-            "\"stat_cla\": \""+stat_cla+"\"," 
-            "\"value_template\": \"{{ value_json."+ object_id +" }}\","; 
+            info = R"("dev_cla": ")" + dev_cla + R"(",)" 
+            + R"("unit_of_meas": ")" + unit_of_meas + R"(",)"
+            + R"("stat_cla": ")" + stat_cla + R"(",)"
+            + R"("value_template": "{{ value_json.)" + object_id + R"( }}",)";
       }
       else if (entity_type == "switch") { 
-              info =         "\"val_tpl\": \"{{ value_json."+ object_id +" }}\","
-            "\"pl\":  \"{{ value_json."+ object_id +" }}\","
-            "\"pl_on\": \"{ \\\""+object_id+"\\\" : \\\"1\\\"  } \","
-            "\"pl_off\": \"{ \\\""+object_id+"\\\" : \\\"0\\\"  } \","
-            "\"stat_on\":1,"
-            "\"stat_off\":0,"
-          "\"qos\":1,"
-          "\"cmd_t\": \""+ topic_Xlyric + "command/" +  entity_type + "/" + object_id + "\",";
+          info = R"("val_tpl": "{{ value_json.)" + object_id + R"( }}",)"
+          + R"("pl": "{{ value_json.)" + object_id + R"( }}",)"
+          + R"("pl_on": "{ \"" + object_id + R"\" : \"" + "1\"  } ",)"
+          + R"("pl_off": "{ \"" + object_id + R"\" : \"" + "0\"  } ",)"
+          + R"("stat_on":1,)"
+          + R"("stat_off":0,)"
+          + R"("qos":1,)"
+          + R"("cmd_t": ")" + topic_Xlyric + "command/" + entity_type + "/" + object_id + R"(",)";
+
       } 
       else if (entity_type == "number") { 
-            info =         "\"val_tpl\": \"{{ value_json."+ object_id +" }}\","
-          "\"cmd_t\": \""+ topic_Xlyric + "command/" +  entity_type + "/" + object_id + "\","
-            "\"cmd_tpl\": \"{ \\\""+object_id+"\\\" : {{ value }} } \"," 
-          "\"entity_category\": \""+ entity_category + "\","
-          "\"max\": \""+max+"\","
-          "\"min\": \""+min+"\","
-          "\"step\": \""+step+"\",";
+          info = R"("val_tpl": "{{ value_json.)" + object_id + R"( }}",)"
+          + R"("cmd_t": ")" + topic_Xlyric + "command/" + entity_type + "/" + object_id + R"(",)"
+          + R"("cmd_tpl": "{ \"" + object_id + R"\" : {{ value }} } ",)"
+          + R"("entity_category": ")" + entity_category + R"(",)"
+          + R"("max": ")" + max + R"(",)"
+          + R"("min": ")" + min + R"(",)"
+          + R"("step": ")" + step + R"(",)";
       } 
       else if (entity_type == "select") { 
-            info =         "\"val_tpl\": \"{{ value_json."+ object_id +" }}\","
-          "\"cmd_t\": \""+ topic_Xlyric + "command/" +  entity_type + "/" + object_id + "\","
-            "\"cmd_tpl\": \"{ \\\""+object_id+"\\\" : \\\"{{ value }}\\\" } \"," 
-          "\"entity_category\": \""+ entity_category + "\","
-          "\"options\": ["+ entity_option + "],";
+          info = R"("val_tpl": "{{ value_json.)" + object_id + R"( }}",)"
+          + R"("cmd_t": ")" + topic_Xlyric + "command/" + entity_type + "/" + object_id + R"(",)"
+          + R"("cmd_tpl": "{ \"" + object_id + R"\" : \"" + "{{ value }}\" } ",)"
+          + R"("entity_category": ")" + entity_category + R"(",)"
+          + R"("options": [)" + entity_option + R"(],)";
       } 
       else if (entity_type == "binary_sensor") { 
-              info =         "\"dev_cla\": \""+dev_cla+"\","
-            "\"pl_on\":\"true\","
-            "\"pl_off\":\"false\","
-            "\"val_tpl\": \"{{ value_json."+ object_id +" }}\",";
+          info = R"("dev_cla": ")" + dev_cla + R"(",)"
+          + R"("pl_on":"true",)"
+          + R"("pl_off":"false",)"
+          + R"("val_tpl": "{{ value_json.)" + object_id + R"( }}",)";
       }
       else if (entity_type == "button") { 
-            info =            "\"entity_category\": \""+ entity_category + "\","
-          "\"cmd_t\": \""+ topic_Xlyric + "command/" +  entity_type + "/" + object_id + "\","
-            "\"pl_prs\": \"{ \\\""+object_id+"\\\" : \\\"1\\\"  } \",";
+          info = R"("entity_category": ")" + entity_category + R"(",)"
+          + R"("cmd_t": ")" + topic_Xlyric + "command/" + entity_type + "/" + object_id + R"(",)"
+          + R"("pl_prs": "{ \"" + object_id + R"\" : \"" + "1\"  } ",)";
+
       }
       return info;
     }
@@ -134,14 +136,16 @@ struct HA
     private:String topic_switch_state = "homeassistant/switch/";
     private:String HA_device_declare() { 
               String IPaddress = WiFi.localIP().toString();
-              String info =         "\"dev\": {"
-              "\"ids\": \""+ node_id + "\","
-              "\"name\": \""+ node_id + "\","
-              "\"sw\": \"Dimmer "+ String(VERSION) +"\","
-              "\"mdl\": \"ESP8266 " + IPaddress + "\","
-              "\"mf\": \"Cyril Poissonnier\","
-              "\"cu\": \"http://"+ IPaddress +"\""
-            "}"; 
+              String info = R"(
+                  "dev": {
+                      "ids": ")" + node_id + R"(",
+                      "name": ")" + node_id + R"(",
+                      "sw": "Dimmer )" + String(VERSION) + R"(",
+                      "mdl": "ESP8266 )" + IPaddress + R"(",
+                      "mf": "Cyril Poissonnier",
+                      "cu": "http://)" + IPaddress + R"("
+                  }
+              )";
             return info;
             }
 
@@ -182,7 +186,7 @@ struct HA
 
 /// création des sensors
 HA device_dimmer; 
-HA device_temp[MAX_DALLAS]; 
+HA device_temp[MAX_DALLAS];  // NO SONAR
 HA device_temp_master;
 
 /// création des switchs
@@ -336,7 +340,7 @@ void devices_init(){
   device_dimmer_child_mode.Set_object_id("child_mode");
   device_dimmer_child_mode.Set_entity_type("select");
   device_dimmer_child_mode.Set_entity_category("config");
-  device_dimmer_child_mode.Set_entity_option("\"off\",\"delester\",\"equal\"");
+  device_dimmer_child_mode.Set_entity_option(R"("off","delester","equal")");
   device_dimmer_child_mode.Set_retain_flag(true);
 
   // création des binary_sensor

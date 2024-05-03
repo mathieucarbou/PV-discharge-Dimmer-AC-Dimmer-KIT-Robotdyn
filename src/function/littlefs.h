@@ -166,7 +166,7 @@ void saveConfiguration(const char *filename, const Config &config) {
   }
   
   /// Publish on MQTT 
-  char buffer[1024];
+  char buffer[1024];// NOSONAR
   serializeJson(doc, buffer);
   client.publish(("Xlyric/sauvegarde/"+ node_id).c_str() ,0,true, buffer);
   

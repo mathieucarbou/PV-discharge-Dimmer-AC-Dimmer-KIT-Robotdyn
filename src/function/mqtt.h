@@ -59,7 +59,7 @@ void onMqttConnect(bool sessionPresent);
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason);
 void onMqttSubscribe(uint16_t packetId, uint8_t qos);
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
-char buffer[1024];
+char buffer[1024];// NOSONAR
   /// @brief Enregistrement du dimmer sur MQTT pour récuperer les informations remonté par MQTT
   /// @param Subscribedtopic 
   /// @param message 
@@ -427,7 +427,7 @@ void connect_and_subscribe() {
   } else {  Serial.println(" Filesystem not present "); delay(5000); }
 }
 //#define MQTT_HOST IPAddress(192, 168, 1, 20)
-char arrayWill[64];
+char arrayWill[64];// NOSONAR
 void async_mqtt_init() {
 	const String LASTWILL_TOPIC = topic_Xlyric + "status";
 	LASTWILL_TOPIC.toCharArray(arrayWill, 64);

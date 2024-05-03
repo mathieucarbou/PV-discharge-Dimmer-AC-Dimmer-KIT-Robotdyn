@@ -10,7 +10,7 @@
     struct SSR_BURST
     {
       /* data */
-      public:char sequence_result[102];
+      public:char sequence_result[102];// NOSONAR
       private:int power;
 
       // getter puissance 
